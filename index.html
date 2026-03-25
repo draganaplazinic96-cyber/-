@@ -1,362 +1,692 @@
 <!DOCTYPE html>
 <html lang="sr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Распоред наставе</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #0f1117;
-    --surface: #1a1d27;
-    --border: #2a2d3a;
-    --accent1: #c8a96e;
-    --accent2: #6e9fc8;
-    --text: #e8e6e0;
-    --muted: #7a7a8c;
-    --pred-bg: rgba(110,159,200,0.12);
-    --pred-col: #8bb8d9;
-    --vez-bg: rgba(120,200,140,0.12);
-    --vez-col: #82c89a;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Распоред</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #111318;
+      color: #e4e6f0;
+      font-family: 'Sora', sans-serif;
+      padding: 2.4rem 1.1rem 4rem;
+      min-height: 100vh;
+    }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    min-height: 100vh;
-    padding: 40px 20px 60px;
-  }
+    .container { max-width: 520px; margin: 0 auto; }
 
-  header { text-align: center; margin-bottom: 48px; }
+    h1 {
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.01em;
+    }
 
-  header h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: 2.2rem;
-    color: var(--accent1);
-    letter-spacing: 0.5px;
-  }
+    .legend {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2.4rem;
+      margin-top: 0.9rem;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.72rem;
+      color: #8890aa;
+    }
+    .legend-dot { width:10px; height:10px; border-radius:3px; }
 
-  .week {
-    max-width: 680px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-  }
+    .day {
+      margin-bottom: 2rem;
+      opacity: 0;
+      transform: translateY(12px);
+      animation: fadeUp 0.4s ease forwards;
+    }
+    .day:nth-child(1){ animation-delay:.04s }
+    .day:nth-child(2){ animation-delay:.10s }
+    .day:nth-child(3){ animation-delay:.16s }
+    .day:nth-child(4){ animation-delay:.22s }
 
-  .day-label {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.1rem;
-    color: var(--accent1);
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 10px;
-    margin-bottom: 14px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+    @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
 
-  .day-label::before {
-    content: '';
-    display: inline-block;
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--accent1);
-    flex-shrink: 0;
-  }
+    .day-title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #5a6080;
+      margin-bottom: 0.7rem;
+    }
 
-  .entries { display: flex; flex-direction: column; gap: 10px; }
+    .entries { display:flex; flex-direction:column; gap:0.5rem; }
 
-  .entry {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px 20px;
-    display: grid;
-    grid-template-columns: 56px 1fr auto;
-    align-items: center;
-    gap: 16px;
-    transition: border-color 0.2s;
-  }
-  .entry:hover { border-color: var(--accent1); }
+    .card {
+      background: #1c1f2b;
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      display: grid;
+      grid-template-columns: 52px 4px 1fr auto;
+      align-items: center;
+      gap: 0 0.8rem;
+      transition: background 0.15s;
+    }
+    .card:hover { background: #21253a; }
 
-  .time-col { text-align: center; }
-  .time { font-size: 1.15rem; font-weight: 700; color: var(--text); line-height: 1.1; letter-spacing: -0.3px; }
+    /* клик курсор за предмете са детаљима */
+    .card.has-detail { cursor: pointer; }
+    .card.has-detail:hover { background: #252840; }
+    .card.has-detail:hover .c-subject { color: #a0b4ff; }
 
-  .info { flex: 1; min-width: 0; }
-  .predmet-name { font-size: 0.97rem; font-weight: 600; color: var(--text); line-height: 1.3; margin-bottom: 4px; }
-  .sala { font-size: 0.78rem; color: var(--muted); }
+    .c-time {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
 
-  .badge {
-    font-size: 0.7rem; font-weight: 600; letter-spacing: 0.5px;
-    padding: 4px 10px; border-radius: 99px; white-space: nowrap; flex-shrink: 0;
-  }
-  .badge.predavanje { background: var(--pred-bg); color: var(--pred-col); border: 1px solid rgba(110,159,200,0.25); }
-  .badge.vezbe      { background: var(--vez-bg);  color: var(--vez-col);  border: 1px solid rgba(120,200,140,0.25); }
-  .badge.kol        { background: rgba(200,169,110,0.12); color: var(--accent1); border: 1px solid rgba(200,169,110,0.25); }
+    .c-bar { width:4px; height:36px; border-radius:4px; flex-shrink:0; }
+    .bar-p { background: #4a8ef5; }
+    .bar-v { background: #3ecf8e; }
 
-  /* Колоквијуми */
-  .section-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 2.2rem;
-    color: var(--accent1);
-    text-align: center;
-    margin: 60px 0 28px;
-  }
+    .c-info { min-width:0; }
+    .c-subject {
+      font-size: 0.97rem;
+      font-weight: 600;
+      color: #e8eaf4;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: color 0.15s;
+    }
+    .c-loc { font-size:0.72rem; color:#676e8a; margin-top:0.18rem; }
 
-  .kol-add-btn {
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    width: 100%; padding: 14px;
-    background: transparent; border: 1px dashed var(--border); border-radius: 12px;
-    color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
-    cursor: pointer; transition: all 0.2s; margin-bottom: 10px;
-  }
-  .kol-add-btn:hover { border-color: var(--accent1); color: var(--accent1); }
-  .kol-add-btn .plus { font-size: 1.2rem; font-weight: 300; line-height: 1; }
+    .c-right { display:flex; align-items:center; gap:0.45rem; }
 
-  .kol-form {
-    background: var(--surface); border: 1px solid var(--accent1); border-radius: 14px;
-    padding: 20px; margin-bottom: 16px; display: none; flex-direction: column; gap: 12px;
-  }
-  .kol-form.open { display: flex; }
+    .c-type {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.22rem 0.55rem;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+    .type-p { background:#1a2e52; color:#74aeff; }
+    .type-v { background:#0f3328; color:#3ecf8e; }
 
-  .kol-form label { font-size: 0.75rem; color: var(--muted); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 4px; display: block; }
+    .detail-arrow {
+      font-size: 0.75rem;
+      color: #3a3f58;
+      transition: color 0.15s;
+    }
+    .card.has-detail:hover .detail-arrow { color: #a0b4ff; }
 
-  .kol-form select,
-  .kol-form input[type="date"],
-  .kol-form input[type="text"] {
-    width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
-    padding: 10px 12px; color: var(--text); font-family: 'DM Sans', sans-serif;
-    font-size: 0.88rem; outline: none; transition: border-color 0.2s; appearance: none;
-  }
-  .kol-form select:focus, .kol-form input:focus { border-color: var(--accent1); }
+    /* ══════════════════════
+       DRAWER / MODAL
+    ══════════════════════ */
 
-  .kol-form-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 4px; }
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+      backdrop-filter: blur(2px);
+    }
+    .overlay.open { opacity: 1; pointer-events: all; }
 
-  .btn-save {
-    background: var(--accent1); color: #0f1117; border: none; border-radius: 8px;
-    padding: 9px 20px; font-family: 'DM Sans', sans-serif; font-size: 0.85rem;
-    font-weight: 700; cursor: pointer; transition: opacity 0.2s;
-  }
-  .btn-save:hover { opacity: 0.85; }
+    .drawer {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: #181b26;
+      border-radius: 20px 20px 0 0;
+      z-index: 101;
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+      max-height: 82vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .drawer.open { transform: translateY(0); }
 
-  .btn-cancel {
-    background: transparent; color: var(--muted); border: 1px solid var(--border);
-    border-radius: 8px; padding: 9px 16px; font-family: 'DM Sans', sans-serif;
-    font-size: 0.85rem; cursor: pointer; transition: border-color 0.2s;
-  }
-  .btn-cancel:hover { border-color: var(--muted); }
+    .drawer-handle {
+      width: 40px; height: 4px;
+      background: #2e3248;
+      border-radius: 2px;
+      margin: 0.75rem auto 0;
+      flex-shrink: 0;
+    }
 
-  .kol-list { display: flex; flex-direction: column; gap: 10px; }
+    .drawer-header {
+      padding: 1rem 1.2rem 0.8rem;
+      border-bottom: 1px solid #2a2d3e;
+      flex-shrink: 0;
+    }
 
-  .kol-entry {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
-    padding: 16px 20px; display: grid; grid-template-columns: 56px 1fr auto;
-    align-items: center; gap: 16px; transition: border-color 0.2s;
-    animation: fadeIn 0.25s ease;
-  }
-  .kol-entry:hover { border-color: var(--accent1); }
+    .drawer-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
 
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(6px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+    .drawer-subtitle {
+      font-size: 0.7rem;
+      color: #5a6080;
+      margin-top: 0.2rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
 
-  .kol-date-col { text-align: center; }
-  .kol-day { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; }
-  .kol-dm  { font-size: 1.05rem; font-weight: 700; color: var(--text); line-height: 1.1; }
-  .kol-predmet { font-size: 0.97rem; font-weight: 600; color: var(--text); }
-  .kol-napomena { font-size: 0.78rem; color: var(--muted); margin-top: 3px; }
+    .drawer-body {
+      overflow-y: auto;
+      padding: 0.8rem 1.2rem 2rem;
+      flex: 1;
+    }
 
-  .kol-delete {
-    background: none; border: none; color: var(--muted); cursor: pointer;
-    font-size: 1rem; padding: 4px; border-radius: 6px; transition: color 0.2s; line-height: 1;
-  }
-  .kol-delete:hover { color: #e07070; }
+    .session-card {
+      background: #1c1f2b;
+      border-radius: 12px;
+      padding: 1rem 1.1rem;
+      margin-bottom: 0.75rem;
+      border-left: 3px solid #3ecf8e;
+    }
 
-  .kol-empty { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 20px 0; }
+    .session-date {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #3ecf8e;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.02em;
+    }
 
-  @media (max-width: 480px) {
-    .entry { grid-template-columns: 48px 1fr; grid-template-rows: auto auto; }
-    .badge { grid-column: 2; justify-self: start; margin-top: 4px; }
-  }
-</style>
+    .session-topic {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #e8eaf4;
+      margin-bottom: 0.6rem;
+      line-height: 1.4;
+    }
+
+    .lit-label {
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #5a6080;
+      margin-bottom: 0.4rem;
+    }
+
+    .lit-item {
+      font-size: 0.78rem;
+      color: #8890aa;
+      line-height: 1.55;
+      padding: 0.25rem 0;
+      border-top: 1px solid #22253a;
+    }
+
+    .lit-item:first-of-type { border-top: none; }
+
+    .lit-item em {
+      color: #b0b8d0;
+      font-style: italic;
+    }
+
+    /* ══════════════════════
+       КОЛОКВИЈУМИ
+    ══════════════════════ */
+
+    .section-divider {
+      border: none;
+      border-top: 1px solid #2a2d3e;
+      margin: 2.8rem 0 2rem;
+    }
+
+    h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 1.4rem;
+      letter-spacing: -0.01em;
+    }
+
+    .kolok-form {
+      background: #1c1f2b;
+      border-radius: 14px;
+      padding: 1.1rem 1.1rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.65rem;
+    }
+
+    .field { display:flex; flex-direction:column; gap:0.3rem; }
+
+    .field label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #5a6080;
+    }
+
+    .field input, .field select {
+      background: #13151e;
+      border: 1px solid #2e3248;
+      border-radius: 8px;
+      color: #e4e6f0;
+      font-family: 'Sora', sans-serif;
+      font-size: 0.88rem;
+      padding: 0.58rem 0.75rem;
+      outline: none;
+      transition: border-color 0.15s;
+      width: 100%;
+    }
+    .field input:focus, .field select:focus { border-color: #4a8ef5; }
+    .field input::placeholder { color: #3a3f58; }
+
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(0.5);
+      cursor: pointer;
+    }
+
+    .btn-add {
+      background: #4a8ef5;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Sora', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 0.65rem 1rem;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-add:hover { background: #3a7de0; }
+    .btn-add:active { transform: scale(0.97); }
+
+    .kolok-list { display:flex; flex-direction:column; gap:0.5rem; }
+
+    .kolok-card {
+      background: #1c1f2b;
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      display: grid;
+      grid-template-columns: 4px 1fr auto;
+      align-items: center;
+      gap: 0 0.85rem;
+      animation: fadeUp 0.3s ease forwards;
+    }
+
+    .k-bar { width:4px; height:38px; border-radius:4px; background:#f5a623; flex-shrink:0; }
+    .k-info { min-width:0; }
+    .k-subject { font-size:0.97rem; font-weight:600; color:#e8eaf4; }
+    .k-date { font-size:0.72rem; color:#f5a623; margin-top:0.18rem; font-weight:600; }
+    .k-right { display:flex; align-items:center; gap:0.5rem; }
+
+    .k-badge {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.22rem 0.55rem;
+      border-radius: 6px;
+      background: #3d2a0a;
+      color: #f5a623;
+      white-space: nowrap;
+    }
+
+    .btn-del {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #3a3f58;
+      font-size: 1rem;
+      padding: 0.2rem;
+      transition: color 0.15s;
+    }
+    .btn-del:hover { color: #e05c5c; }
+
+    .empty-state {
+      text-align: center;
+      color: #3a3f58;
+      font-size: 0.82rem;
+      padding: 1.5rem 0;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 2.5rem;
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #2e3248;
+    }
+  </style>
 </head>
 <body>
 
-<header>
-  <h1>Распоред предавања и вежби</h1>
-</header>
-
-<div class="week">
-
-  <div class="day-block">
-    <div class="day-label">Понедељак</div>
-    <div class="entries">
-      <div class="entry">
-        <div class="time-col"><div class="time">10:30</div></div>
-        <div class="info"><div class="predmet-name">Локална самоуправа</div><div class="sala">📍 Слушаоница 9</div></div>
-        <span class="badge vezbe">Вежбе</span>
-      </div>
-      <div class="entry">
-        <div class="time-col"><div class="time">12:00</div></div>
-        <div class="info"><div class="predmet-name">Локална самоуправа</div><div class="sala">📍 Слушаоница 3</div></div>
-        <span class="badge predavanje">Предавање</span>
-      </div>
-      <div class="entry">
-        <div class="time-col"><div class="time">16:30</div></div>
-        <div class="info"><div class="predmet-name">Јавна управа</div><div class="sala">📍 Амфитеатар</div></div>
-        <span class="badge vezbe">Вежбе</span>
-      </div>
-    </div>
+<!-- OVERLAY + DRAWER -->
+<div class="overlay" id="overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-handle"></div>
+  <div class="drawer-header">
+    <div class="drawer-title" id="drawer-title"></div>
+    <div class="drawer-subtitle" id="drawer-subtitle"></div>
   </div>
-
-  <div class="day-block">
-    <div class="day-label">Уторак</div>
-    <div class="entries">
-      <div class="entry">
-        <div class="time-col"><div class="time">12:00</div></div>
-        <div class="info"><div class="predmet-name">Ауторитарни режими</div><div class="sala">📍 Слушаоница 15</div></div>
-        <span class="badge predavanje">Предавање</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="day-block">
-    <div class="day-label">Среда</div>
-    <div class="entries">
-      <div class="entry">
-        <div class="time-col"><div class="time">11:30</div></div>
-        <div class="info"><div class="predmet-name">Политикологија религије</div><div class="sala">📍 Амфитеатар</div></div>
-        <span class="badge predavanje">Предавање</span>
-      </div>
-      <div class="entry">
-        <div class="time-col"><div class="time">13:30</div></div>
-        <div class="info"><div class="predmet-name">Јавна управа</div><div class="sala">📍 Амфитеатар</div></div>
-        <span class="badge predavanje">Предавање</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="day-block">
-    <div class="day-label">Петак</div>
-    <div class="entries">
-      <div class="entry">
-        <div class="time-col"><div class="time">10:00</div></div>
-        <div class="info"><div class="predmet-name">Политикологија религије</div><div class="sala">📍 Слушаоница 6</div></div>
-        <span class="badge vezbe">Вежбе</span>
-      </div>
-    </div>
-  </div>
-
+  <div class="drawer-body" id="drawer-body"></div>
 </div>
 
-<!-- КОЛОКВИЈУМИ -->
-<div class="week" style="margin-top:0">
-  <h2 class="section-title">Распоред колоквијума</h2>
+<div class="container">
 
-  <div id="kol-form" class="kol-form">
-    <div>
-      <label>Предмет</label>
-      <select id="kol-predmet">
-        <option value="">— Изабери предмет —</option>
-        <option>Локална самоуправа</option>
-        <option>Јавна управа</option>
-        <option>Ауторитарни режими</option>
-        <option>Политикологија религије</option>
-      </select>
-    </div>
-    <div>
-      <label>Датум</label>
-      <input type="date" id="kol-datum">
-    </div>
-    <div>
-      <label>Напомена (необавезно)</label>
-      <input type="text" id="kol-napomena" placeholder="нпр. градиво до 3. поглавља">
-    </div>
-    <div class="kol-form-actions">
-      <button class="btn-cancel" onclick="closeForm()">Одустани</button>
-      <button class="btn-save" onclick="saveKol()">Сачувај</button>
+  <h1>Распоред наставе</h1>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#4a8ef5"></div> Предавање</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#3ecf8e"></div> Вежбе</div>
+    <div class="legend-item" style="color:#5a6080; font-size:0.68rem;">↗ клик = детаљи</div>
+  </div>
+
+  <!-- ПОНЕДЕЉАК -->
+  <div class="day">
+    <div class="day-title">Понедељак</div>
+    <div class="entries">
+
+      <div class="card">
+        <div class="c-time">10:30</div><div class="c-bar bar-v"></div>
+        <div class="c-info"><div class="c-subject">Локална самоуправа</div><div class="c-loc">Слушаоница 9</div></div>
+        <div class="c-right"><div class="c-type type-v">Вежбе</div></div>
+      </div>
+
+      <div class="card">
+        <div class="c-time">12:00</div><div class="c-bar bar-p"></div>
+        <div class="c-info"><div class="c-subject">Локална самоуправа</div><div class="c-loc">Слушаоница 3</div></div>
+        <div class="c-right"><div class="c-type type-p">Предавање</div></div>
+      </div>
+
+      <div class="card">
+        <div class="c-time">16:30</div><div class="c-bar bar-v"></div>
+        <div class="c-info"><div class="c-subject">Јавна управа</div><div class="c-loc">Амфитеатар</div></div>
+        <div class="c-right"><div class="c-type type-v">Вежбе</div></div>
+      </div>
+
     </div>
   </div>
 
-  <button class="kol-add-btn" id="kol-add-btn" onclick="openForm()">
-    <span class="plus">＋</span> Додај колоквијум
-  </button>
+  <!-- УТОРАК -->
+  <div class="day">
+    <div class="day-title">Уторак</div>
+    <div class="entries">
 
-  <div class="kol-list" id="kol-list">
-    <div class="kol-empty" id="kol-empty">Нема унетих колоквијума.</div>
+      <div class="card">
+        <div class="c-time">12:00</div><div class="c-bar bar-p"></div>
+        <div class="c-info"><div class="c-subject">Ауторитарни режими</div><div class="c-loc">Слушаоница 15</div></div>
+        <div class="c-right"><div class="c-type type-p">Предавање</div></div>
+      </div>
+
+    </div>
   </div>
+
+  <!-- СРЕДА -->
+  <div class="day">
+    <div class="day-title">Среда</div>
+    <div class="entries">
+
+      <div class="card">
+        <div class="c-time">11:30</div><div class="c-bar bar-p"></div>
+        <div class="c-info"><div class="c-subject">Политикологија религије</div><div class="c-loc">Амфитеатар</div></div>
+        <div class="c-right"><div class="c-type type-p">Предавање</div></div>
+      </div>
+
+      <div class="card">
+        <div class="c-time">13:30</div><div class="c-bar bar-p"></div>
+        <div class="c-info"><div class="c-subject">Јавна управа</div><div class="c-loc">Амфитеатар</div></div>
+        <div class="c-right"><div class="c-type type-p">Предавање</div></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ПЕТАК -->
+  <div class="day">
+    <div class="day-title">Петак</div>
+    <div class="entries">
+
+      <div class="card">
+        <div class="c-time">09:00</div><div class="c-bar bar-p"></div>
+        <div class="c-info"><div class="c-subject">Политичко понашање</div><div class="c-loc">Слушаоница 1</div></div>
+        <div class="c-right"><div class="c-type type-p">Предавање</div></div>
+      </div>
+
+      <div class="card has-detail" onclick="openDrawer('polrel')">
+        <div class="c-time">12:30</div><div class="c-bar bar-v"></div>
+        <div class="c-info"><div class="c-subject">Политикологија религије</div><div class="c-loc">Слушаоница 6</div></div>
+        <div class="c-right"><div class="c-type type-v">Вежбе</div><span class="detail-arrow">↗</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- КОЛОКВИЈУМИ -->
+  <hr class="section-divider">
+  <h2>Распоред колоквијума</h2>
+
+  <div class="kolok-form">
+    <div class="form-row">
+      <div class="field" style="grid-column: 1 / -1;">
+        <label>Предмет</label>
+        <input type="text" id="inp-subject" placeholder="нпр. Јавна управа">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="field">
+        <label>Датум</label>
+        <input type="date" id="inp-date">
+      </div>
+      <div class="field">
+        <label>Колоквијум</label>
+        <select id="inp-num">
+          <option value="I">I колоквијум</option>
+          <option value="II">II колоквијум</option>
+          <option value="III">III колоквијум</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn-add" onclick="addKolok()">+ Додај колоквијум</button>
+  </div>
+
+  <div class="kolok-list" id="kolok-list">
+    <div class="empty-state" id="empty-msg">Нема уписаних колоквијума</div>
+  </div>
+
+  <footer>Летњи семестар 2025/2026.</footer>
 </div>
 
 <script>
-  const DANI = ['Недеља','Понедељак','Уторак','Среда','Четвртак','Петак','Субота'];
-  const MESECI = ['јануар','фебруар','март','април','мај','јун','јул','август','септембар','октобар','новембар','децембар'];
-  let kolItems = [];
-
-  function openForm() {
-    document.getElementById('kol-form').classList.add('open');
-    document.getElementById('kol-add-btn').style.display = 'none';
+// ══════════════════════════════════════════
+//  ПОДАЦИ — Политикологија религије вежбе
+// ══════════════════════════════════════════
+const DETAILS = {
+  polrel: {
+    title: 'Политикологија религије',
+    subtitle: 'Вежбе · летњи семестар 2025/2026.',
+    sessions: [
+      {
+        date: '3. април',
+        topic: 'Увод у политикологију религије',
+        lit: [
+          'Мирољуб Јевтић, <em>Политикологија религије</em>, Центар за проучавање религије и верску толеранцију — стр. 1–29.',
+          'Питер Бергер, „Десекуларизација света", у: <em>Ридер из политикологије религије</em>.',
+          'Хозе Казанова, „Секуларизми и секуларизми", у: <em>Ридер из политикологије религије</em>.',
+        ]
+      },
+      {
+        date: '24. април',
+        topic: 'Јеврејство и политика',
+        lit: [
+          'Марко Вековић, <em>Религија за политикологе...</em> — поглавље „Јеврејство".',
+          'Мирољуб Јевтић, „Хришћански ционизам као чинилац политике САД", <em>Међународни проблеми</em>, год. 65, бр. 4, 2013.',
+        ]
+      },
+      {
+        date: '8. мај',
+        topic: 'Хришћанство и политика',
+        lit: [
+          'Марко Вековић, <em>Религија за политикологе...</em> — поглавље „Хришћанство".',
+          'Peter L. Berger, "The Global Picture", <em>Journal of Democracy</em>, Vol. 15, No. 2, 2004, у: <em>Ридер</em>.',
+          'Семјуел Хантингтон, <em>Трећи талас демократизације на крају двадесетог века</em>, Службени гласник, Београд, 2004 — увод + поглавље „Религијске промене", у: <em>Ридер</em>.',
+        ]
+      },
+      {
+        date: '15. мај',
+        topic: 'Ислам и политика',
+        lit: [
+          'Марко Вековић, <em>Религија за политикологе...</em> — поглавље „Ислам".',
+          'Samuel P. Huntington, "The Clash of Civilizations?", <em>Foreign Affairs</em>, Vol. 72, No. 3, 1993, у: <em>Ридер</em>.',
+          'Steven M. Fish, „Islam and Authoritarianism", <em>World Politics</em>, Vol. 55, No. 1, 2002, у: <em>Ридер</em>.',
+          'Alfred Stepan и Juan J. Linz, "Democratization Theory and the \'Arab Spring\'", <em>Journal of Democracy</em>, Vol. 24, No. 2, 2013, у: <em>Ридер</em>.',
+        ]
+      },
+      {
+        date: '22. мај',
+        topic: 'Хиндуизам & будизам',
+        lit: [
+          'Марко Вековић, <em>Религија за политикологе...</em> — поглавља „Хиндуизам" и „Будизам".',
+          'Alfred Stepan, "Religion, Democracy, and the \'Twin Tolerations\'", <em>Journal of Democracy</em>, Vol. 11, No. 4, 2000, у: <em>Ридер</em>.',
+          'Jonathan Fox, "Do Democracies Have Separation of Religion and State?", <em>Canadian Journal of Political Science</em>, Vol. 40, No. 1, 2007, у: <em>Ридер</em>.',
+        ]
+      },
+      {
+        date: '29. мај',
+        topic: 'Шинтоизам & конфуцијанизам',
+        lit: [
+          'Марко Вековић, <em>Религија за политикологе...</em> — поглавља „Шинтоизам" и „Конфуцијанизам".',
+          'Daniel Philpott, "Explaining the Political Ambivalence of Religion", <em>American Political Science Review</em>, Vol. 101, No. 3, 2007, у: <em>Ридер</em>.',
+        ]
+      },
+    ]
   }
+};
 
-  function closeForm() {
-    document.getElementById('kol-form').classList.remove('open');
-    document.getElementById('kol-add-btn').style.display = 'flex';
-    document.getElementById('kol-predmet').value = '';
-    document.getElementById('kol-datum').value = '';
-    document.getElementById('kol-napomena').value = '';
-  }
+// ══════════════════════════════════════════
+//  DRAWER ЛОГИКА
+// ══════════════════════════════════════════
+function openDrawer(key) {
+  const data = DETAILS[key];
+  if (!data) return;
 
-  function saveKol() {
-    const predmet = document.getElementById('kol-predmet').value;
-    const datum = document.getElementById('kol-datum').value;
-    const napomena = document.getElementById('kol-napomena').value.trim();
-    if (!predmet) { alert('Изабери предмет.'); return; }
-    if (!datum)   { alert('Унеси датум.'); return; }
-    kolItems.push({ predmet, datum, napomena });
-    kolItems.sort((a,b) => a.datum.localeCompare(b.datum));
-    renderKol();
-    closeForm();
-  }
+  document.getElementById('drawer-title').textContent = data.title;
+  document.getElementById('drawer-subtitle').textContent = data.subtitle;
 
-  function deleteKol(idx) {
-    kolItems.splice(idx, 1);
-    renderKol();
-  }
+  const body = document.getElementById('drawer-body');
+  body.innerHTML = '';
 
-  function renderKol() {
-    const list = document.getElementById('kol-list');
-    const empty = document.getElementById('kol-empty');
-    list.querySelectorAll('.kol-entry').forEach(e => e.remove());
-    if (kolItems.length === 0) { empty.style.display = 'block'; return; }
-    empty.style.display = 'none';
-    kolItems.forEach((item, i) => {
-      const d = new Date(item.datum + 'T12:00:00');
-      const dan = DANI[d.getDay()];
-      const dm = d.getDate() + '. ' + MESECI[d.getMonth()];
-      const el = document.createElement('div');
-      el.className = 'kol-entry';
-      el.innerHTML = `
-        <div class="kol-date-col">
-          <div class="kol-day">${dan.slice(0,3)}</div>
-          <div class="kol-dm">${dm}</div>
-        </div>
-        <div class="info">
-          <div class="kol-predmet">${item.predmet}</div>
-          ${item.napomena ? `<div class="kol-napomena">📝 ${item.napomena}</div>` : ''}
-        </div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <span class="badge kol">Колоквијум</span>
-          <button class="kol-delete" onclick="deleteKol(${i})" title="Обриши">✕</button>
-        </div>
-      `;
-      list.appendChild(el);
-    });
-  }
+  data.sessions.forEach(s => {
+    const card = document.createElement('div');
+    card.className = 'session-card';
+    const litHTML = s.lit.map(l => `<div class="lit-item">${l}</div>`).join('');
+    card.innerHTML = `
+      <div class="session-date">${s.date}</div>
+      <div class="session-topic">${s.topic}</div>
+      <div class="lit-label">Литература</div>
+      ${litHTML}
+    `;
+    body.appendChild(card);
+  });
+
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDrawer() {
+  document.getElementById('overlay').classList.remove('open');
+  document.getElementById('drawer').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// свајп доле да затвори
+let startY = 0;
+const drawer = document.getElementById('drawer');
+drawer.addEventListener('touchstart', e => { startY = e.touches[0].clientY; });
+drawer.addEventListener('touchend', e => {
+  if (e.changedTouches[0].clientY - startY > 60) closeDrawer();
+});
+
+// ══════════════════════════════════════════
+//  КОЛОКВИЈУМИ
+// ══════════════════════════════════════════
+const items = [];
+const MONTHS = ['јануара','фебруара','марта','априла','маја','јуна',
+                'јула','августа','септембра','октобра','новембра','децембра'];
+
+function formatDate(str) {
+  const [y, m, d] = str.split('-');
+  return `${parseInt(d)}. ${MONTHS[parseInt(m)-1]} ${y}.`;
+}
+
+function render() {
+  const list = document.getElementById('kolok-list');
+  const empty = document.getElementById('empty-msg');
+  list.querySelectorAll('.kolok-card').forEach(c => c.remove());
+  if (items.length === 0) { empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  const sorted = [...items].sort((a,b) => a.date.localeCompare(b.date));
+  sorted.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'kolok-card';
+    card.innerHTML = `
+      <div class="k-bar"></div>
+      <div class="k-info">
+        <div class="k-subject">${item.subject}</div>
+        <div class="k-date">${formatDate(item.date)}</div>
+      </div>
+      <div class="k-right">
+        <span class="k-badge">${item.num} колоквијум</span>
+        <button class="btn-del" onclick="deleteItem('${item.id}')">✕</button>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+function addKolok() {
+  const subject = document.getElementById('inp-subject').value.trim();
+  const date    = document.getElementById('inp-date').value;
+  const num     = document.getElementById('inp-num').value;
+  if (!subject) { flash('inp-subject'); return; }
+  if (!date)    { flash('inp-date');    return; }
+  items.push({ id: Date.now().toString(), subject, date, num });
+  render();
+  document.getElementById('inp-subject').value = '';
+  document.getElementById('inp-date').value = '';
+}
+
+function deleteItem(id) {
+  const idx = items.findIndex(i => i.id === id);
+  if (idx !== -1) { items.splice(idx, 1); render(); }
+}
+
+function flash(id) {
+  const el = document.getElementById(id);
+  el.style.borderColor = '#e05c5c';
+  setTimeout(() => { el.style.borderColor = ''; }, 800);
+}
+
+document.getElementById('inp-subject').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addKolok();
+});
 </script>
-
 </body>
 </html>
