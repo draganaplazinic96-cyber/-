@@ -30,6 +30,7 @@
       gap: 1rem;
       margin-bottom: 2.4rem;
       margin-top: 0.9rem;
+      flex-wrap: wrap;
     }
     .legend-item {
       display: flex;
@@ -76,7 +77,6 @@
     }
     .card:hover { background: #21253a; }
 
-    /* клик курсор за предмете са детаљима */
     .card.has-detail { cursor: pointer; }
     .card.has-detail:hover { background: #252840; }
     .card.has-detail:hover .c-subject { color: #a0b4ff; }
@@ -126,10 +126,7 @@
     }
     .card.has-detail:hover .detail-arrow { color: #a0b4ff; }
 
-    /* ══════════════════════
-       DRAWER / MODAL
-    ══════════════════════ */
-
+    /* ══ DRAWER ══ */
     .overlay {
       position: fixed;
       inset: 0;
@@ -180,13 +177,12 @@
       font-size: 0.7rem;
       color: #5a6080;
       margin-top: 0.2rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+      letter-spacing: 0.06em;
     }
 
     .drawer-body {
       overflow-y: auto;
-      padding: 0.8rem 1.2rem 2rem;
+      padding: 0.9rem 1.2rem 2.5rem;
       flex: 1;
     }
 
@@ -199,19 +195,18 @@
     }
 
     .session-date {
-      font-size: 0.85rem;
+      font-size: 0.88rem;
       font-weight: 700;
       color: #3ecf8e;
-      margin-bottom: 0.5rem;
-      letter-spacing: 0.02em;
+      margin-bottom: 0.45rem;
     }
 
     .session-topic {
-      font-size: 0.95rem;
+      font-size: 1rem;
       font-weight: 600;
       color: #e8eaf4;
-      margin-bottom: 0.6rem;
-      line-height: 1.4;
+      margin-bottom: 0.7rem;
+      line-height: 1.35;
     }
 
     .lit-label {
@@ -220,28 +215,20 @@
       letter-spacing: 0.15em;
       text-transform: uppercase;
       color: #5a6080;
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.35rem;
     }
 
     .lit-item {
       font-size: 0.78rem;
       color: #8890aa;
-      line-height: 1.55;
-      padding: 0.25rem 0;
+      line-height: 1.6;
+      padding: 0.28rem 0;
       border-top: 1px solid #22253a;
     }
-
     .lit-item:first-of-type { border-top: none; }
+    .lit-item em { color: #b0b8d0; font-style: italic; }
 
-    .lit-item em {
-      color: #b0b8d0;
-      font-style: italic;
-    }
-
-    /* ══════════════════════
-       КОЛОКВИЈУМИ
-    ══════════════════════ */
-
+    /* ══ КОЛОКВИЈУМИ ══ */
     .section-divider {
       border: none;
       border-top: 1px solid #2a2d3e;
@@ -378,7 +365,6 @@
 </head>
 <body>
 
-<!-- OVERLAY + DRAWER -->
 <div class="overlay" id="overlay" onclick="closeDrawer()"></div>
 <div class="drawer" id="drawer">
   <div class="drawer-handle"></div>
@@ -402,25 +388,21 @@
   <div class="day">
     <div class="day-title">Понедељак</div>
     <div class="entries">
-
       <div class="card">
         <div class="c-time">10:30</div><div class="c-bar bar-v"></div>
         <div class="c-info"><div class="c-subject">Локална самоуправа</div><div class="c-loc">Слушаоница 9</div></div>
         <div class="c-right"><div class="c-type type-v">Вежбе</div></div>
       </div>
-
       <div class="card">
         <div class="c-time">12:00</div><div class="c-bar bar-p"></div>
         <div class="c-info"><div class="c-subject">Локална самоуправа</div><div class="c-loc">Слушаоница 3</div></div>
         <div class="c-right"><div class="c-type type-p">Предавање</div></div>
       </div>
-
       <div class="card">
         <div class="c-time">16:30</div><div class="c-bar bar-v"></div>
         <div class="c-info"><div class="c-subject">Јавна управа</div><div class="c-loc">Амфитеатар</div></div>
         <div class="c-right"><div class="c-type type-v">Вежбе</div></div>
       </div>
-
     </div>
   </div>
 
@@ -428,13 +410,11 @@
   <div class="day">
     <div class="day-title">Уторак</div>
     <div class="entries">
-
       <div class="card">
         <div class="c-time">12:00</div><div class="c-bar bar-p"></div>
         <div class="c-info"><div class="c-subject">Ауторитарни режими</div><div class="c-loc">Слушаоница 15</div></div>
         <div class="c-right"><div class="c-type type-p">Предавање</div></div>
       </div>
-
     </div>
   </div>
 
@@ -442,19 +422,16 @@
   <div class="day">
     <div class="day-title">Среда</div>
     <div class="entries">
-
       <div class="card">
         <div class="c-time">11:30</div><div class="c-bar bar-p"></div>
         <div class="c-info"><div class="c-subject">Политикологија религије</div><div class="c-loc">Амфитеатар</div></div>
         <div class="c-right"><div class="c-type type-p">Предавање</div></div>
       </div>
-
       <div class="card">
         <div class="c-time">13:30</div><div class="c-bar bar-p"></div>
         <div class="c-info"><div class="c-subject">Јавна управа</div><div class="c-loc">Амфитеатар</div></div>
         <div class="c-right"><div class="c-type type-p">Предавање</div></div>
       </div>
-
     </div>
   </div>
 
@@ -462,19 +439,16 @@
   <div class="day">
     <div class="day-title">Петак</div>
     <div class="entries">
-
       <div class="card">
         <div class="c-time">09:00</div><div class="c-bar bar-p"></div>
         <div class="c-info"><div class="c-subject">Политичко понашање</div><div class="c-loc">Слушаоница 1</div></div>
         <div class="c-right"><div class="c-type type-p">Предавање</div></div>
       </div>
-
       <div class="card has-detail" onclick="openDrawer('polrel')">
         <div class="c-time">12:30</div><div class="c-bar bar-v"></div>
         <div class="c-info"><div class="c-subject">Политикологија религије</div><div class="c-loc">Слушаоница 6</div></div>
         <div class="c-right"><div class="c-type type-v">Вежбе</div><span class="detail-arrow">↗</span></div>
       </div>
-
     </div>
   </div>
 
@@ -514,9 +488,6 @@
 </div>
 
 <script>
-// ══════════════════════════════════════════
-//  ПОДАЦИ — Политикологија религије вежбе
-// ══════════════════════════════════════════
 const DETAILS = {
   polrel: {
     title: 'Политикологија религије',
@@ -526,9 +497,9 @@ const DETAILS = {
         date: '3. април',
         topic: 'Увод у политикологију религије',
         lit: [
-          'Мирољуб Јевтић, <em>Политикологија религије</em>, Центар за проучавање религије и верску толеранцију — стр. 1–29.',
+          'Мирољуб Јевтић, <em>Политикологија религије</em>, Центар за проучавање религије и верску толеранцију... стр. 1–29.',
           'Питер Бергер, „Десекуларизација света", у: <em>Ридер из политикологије религије</em>.',
-          'Хозе Казанова, „Секуларизми и секуларизми", у: <em>Ридер из политикологије религије</em>.',
+          'Хозе Казанова, „Секуларизам и секуларизми", у: <em>Ридер из политикологије религије</em>.',
         ]
       },
       {
@@ -536,7 +507,7 @@ const DETAILS = {
         topic: 'Јеврејство и политика',
         lit: [
           'Марко Вековић, <em>Религија за политикологе...</em> — поглавље „Јеврејство".',
-          'Мирољуб Јевтић, „Хришћански ционизам као чинилац политике САД", <em>Међународни проблеми</em>, год. 65, бр. 4, 2013.',
+          'Мирољуб Јевтић, „Хришћански ционизам као чинилац политике САД", <em>Међународни проблеми</em>, год. 65, бр. 4, 2013, у: <em>Ридер из политикологије религије</em>.',
         ]
       },
       {
@@ -544,8 +515,8 @@ const DETAILS = {
         topic: 'Хришћанство и политика',
         lit: [
           'Марко Вековић, <em>Религија за политикологе...</em> — поглавље „Хришћанство".',
-          'Peter L. Berger, "The Global Picture", <em>Journal of Democracy</em>, Vol. 15, No. 2, 2004, у: <em>Ридер</em>.',
-          'Семјуел Хантингтон, <em>Трећи талас демократизације на крају двадесетог века</em>, Службени гласник, Београд, 2004 — увод + поглавље „Религијске промене", у: <em>Ридер</em>.',
+          'Peter L. Berger, „The Global Picture", <em>Journal of Democracy</em>, Vol. 15, No. 2, 2004, у: <em>Ридер из политикологије религије</em>.',
+          'Семјуел Хантингтон, <em>Трећи талас демократизације на крају двадесетог века</em>, Стубови културе, Београд, 2004 — увод + поглавље „Религијске промене", у: <em>Ридер из политикологије религије</em>.',
         ]
       },
       {
@@ -553,9 +524,9 @@ const DETAILS = {
         topic: 'Ислам и политика',
         lit: [
           'Марко Вековић, <em>Религија за политикологе...</em> — поглавље „Ислам".',
-          'Samuel P. Huntington, "The Clash of Civilizations?", <em>Foreign Affairs</em>, Vol. 72, No. 3, 1993, у: <em>Ридер</em>.',
-          'Steven M. Fish, „Islam and Authoritarianism", <em>World Politics</em>, Vol. 55, No. 1, 2002, у: <em>Ридер</em>.',
-          'Alfred Stepan и Juan J. Linz, "Democratization Theory and the \'Arab Spring\'", <em>Journal of Democracy</em>, Vol. 24, No. 2, 2013, у: <em>Ридер</em>.',
+          'Samuel P. Huntington, „The Clash of Civilizations?", <em>Foreign Affairs</em>, Vol. 72, No. 3, 1993, у: <em>Ридер из политикологије религије</em>.',
+          'Steven M. Fish, „Islam and Authoritarianism", <em>World Politics</em>, Vol. 55, No. 1, 2002, у: <em>Ридер из политикологије религије</em>.',
+          'Alfred Stepan and Juan J. Linz, „Democratization Theory and the \'Arab Spring\'", <em>Journal of Democracy</em>, Vol. 24, No. 2, 2013, у: <em>Ридер из политикологије религије</em>.',
         ]
       },
       {
@@ -563,35 +534,29 @@ const DETAILS = {
         topic: 'Хиндуизам & будизам',
         lit: [
           'Марко Вековић, <em>Религија за политикологе...</em> — поглавља „Хиндуизам" и „Будизам".',
-          'Alfred Stepan, "Religion, Democracy, and the \'Twin Tolerations\'", <em>Journal of Democracy</em>, Vol. 11, No. 4, 2000, у: <em>Ридер</em>.',
-          'Jonathan Fox, "Do Democracies Have Separation of Religion and State?", <em>Canadian Journal of Political Science</em>, Vol. 40, No. 1, 2007, у: <em>Ридер</em>.',
+          'Alfred Stepan, „Religion, Democracy, and the \'Twin Toleration\'", <em>Journal of Democracy</em>, Vol. 11, No. 4, 2000, у: <em>Ридер из политикологије религије</em>.',
+          'Jonathan Fox, „Do Democracies Have Separation of Religion and State", <em>Canadian Journal of Political Science</em>, Vol. 40, No. 1, 2007, у: <em>Ридер из политикологије религије</em>.',
         ]
       },
       {
         date: '29. мај',
-        topic: 'Шинтоизам & конфуцијанизам',
+        topic: 'Шинтоизам & конфучијанизам',
         lit: [
-          'Марко Вековић, <em>Религија за политикологе...</em> — поглавља „Шинтоизам" и „Конфуцијанизам".',
-          'Daniel Philpott, "Explaining the Political Ambivalence of Religion", <em>American Political Science Review</em>, Vol. 101, No. 3, 2007, у: <em>Ридер</em>.',
+          'Марко Вековић, <em>Религија за политикологе...</em> — поглавља „Шинтоизам" и „Конфучијанизам".',
+          'Daniel Philpott, „Explaining the Political Ambivalence of Religion", <em>American Political Science Review</em>, Vol. 101, No. 3, 2007, у: <em>Ридер из политикологије религије</em>.',
         ]
       },
     ]
   }
 };
 
-// ══════════════════════════════════════════
-//  DRAWER ЛОГИКА
-// ══════════════════════════════════════════
 function openDrawer(key) {
   const data = DETAILS[key];
   if (!data) return;
-
   document.getElementById('drawer-title').textContent = data.title;
   document.getElementById('drawer-subtitle').textContent = data.subtitle;
-
   const body = document.getElementById('drawer-body');
   body.innerHTML = '';
-
   data.sessions.forEach(s => {
     const card = document.createElement('div');
     card.className = 'session-card';
@@ -604,7 +569,6 @@ function openDrawer(key) {
     `;
     body.appendChild(card);
   });
-
   document.getElementById('overlay').classList.add('open');
   document.getElementById('drawer').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -616,7 +580,6 @@ function closeDrawer() {
   document.body.style.overflow = '';
 }
 
-// свајп доле да затвори
 let startY = 0;
 const drawer = document.getElementById('drawer');
 drawer.addEventListener('touchstart', e => { startY = e.touches[0].clientY; });
@@ -624,9 +587,7 @@ drawer.addEventListener('touchend', e => {
   if (e.changedTouches[0].clientY - startY > 60) closeDrawer();
 });
 
-// ══════════════════════════════════════════
-//  КОЛОКВИЈУМИ
-// ══════════════════════════════════════════
+// ══ КОЛОКВИЈУМИ ══
 const items = [];
 const MONTHS = ['јануара','фебруара','марта','априла','маја','јуна',
                 'јула','августа','септембра','октобра','новембра','децембра'];
